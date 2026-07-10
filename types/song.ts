@@ -1,7 +1,15 @@
+export type SongMood =
+  | "静か"
+  | "穏やか"
+  | "あたたかい"
+  | "楽しい"
+  | "切ない"
+  | "未設定";
+
 export type Song = {
-  id: number;
+  id: string;
   title: string;
-  mood: string;
+  mood: SongMood;
   durationMinutes: number;
   memo: string;
 };

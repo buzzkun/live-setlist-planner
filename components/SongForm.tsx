@@ -1,11 +1,13 @@
 "use client";
 
+import type { SongMood } from "../types/song";
+
 type SongFormProps = {
   inputSongTitle: string;
   setInputSongTitle: (value: string) => void;
 
-  inputSongMood: string;
-  setInputSongMood: (value: string) => void;
+  inputSongMood: SongMood;
+  setInputSongMood: (value: SongMood) => void;
 
   inputSongDuration: string;
   setInputSongDuration: (value: string) => void;
@@ -38,13 +40,18 @@ export default function SongForm({
           className="rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-sky-400"
         />
 
-        <input
-          type="text"
+        <select
           value={inputSongMood}
-          onChange={(e) => setInputSongMood(e.target.value)}
-          placeholder="雰囲気"
-          className="rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-sky-400"
-        />
+          onChange={(e) => setInputSongMood(e.target.value as SongMood)}
+          className="w-full rounded border px-3 py-2"
+        >
+          <option value="未設定">楽曲の雰囲気</option>
+          <option value="静か">静か</option>
+          <option value="穏やか">穏やか</option>
+          <option value="あたたかい">あたたかい</option>
+          <option value="楽しい">楽しい</option>
+          <option value="切ない">切ない</option>
+        </select>
 
         <input
           type="number"

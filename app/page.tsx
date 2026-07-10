@@ -3,7 +3,7 @@
 import { useState } from "react";
 import LiveInfo from "../components/LiveInfo";
 import SongList from "../components/SongList";
-import type { Song } from "../types/song";
+import type { Song, SongMood } from "../types/song";
 import { formatDuration } from "../utils/formatDuration";
 import SongForm from "../components/SongForm";
 
@@ -16,21 +16,21 @@ export default function Home() {
 
   const [songs, setSongs] = useState<Song[]>([
     {
-      id: 1,
+      id: "song-1",
       title: "Morning Rain",
       mood: "静か",
       durationMinutes: 5,
       memo: "最初は静かに入る",
     },
     {
-      id: 2,
+      id: "song-2",
       title: "calm",
       mood: "穏やか",
       durationMinutes: 4,
       memo: "空気を整える",
     },
     {
-      id: 3,
+      id: "song-3",
       title: "幸せになるのよ",
       mood: "あたたかい",
       durationMinutes: 6,
@@ -38,11 +38,8 @@ export default function Home() {
     },
   ]);
 
-  // 初期データで id:1〜3 を使っているので、次に追加する曲は id:4 から始める
-  const [nextSongId, setNextSongId] = useState(4);
-
   const [inputSongTitle, setInputSongTitle] = useState("");
-  const [inputSongMood, setInputSongMood] = useState("");
+  const [inputSongMood, setInputSongMood] = useState<SongMood>("未設定");
   const [inputSongDuration, setInputSongDuration] = useState("");
   const [inputSongMemo, setInputSongMemo] = useState("");
 
@@ -78,26 +75,23 @@ export default function Home() {
     setSongs([
       ...songs,
       {
-        id: nextSongId,
+        id: crypto.randomUUID(),
         title: inputSongTitle,
-        mood: inputSongMood || "未設定",
+        mood: inputSongMood,
         durationMinutes: durationNumber,
         memo: inputSongMemo || "メモなし",
       },
     ]);
 
-    // 次に追加する曲用にidを1つ進める
-    setNextSongId(nextSongId + 1);
-
     // 追加後は入力欄を空にする
     setInputSongTitle("");
-    setInputSongMood("");
+    setInputSongMood("未設定");
     setInputSongDuration("");
     setInputSongMemo("");
     setErrorMessage("");
   };
 
-  const deleteSong = (id: number) => {
+  const deleteSong = (id: string) => {
     // 削除したいid以外の曲だけを残す
     setSongs(songs.filter((song) => song.id !== id));
   };
