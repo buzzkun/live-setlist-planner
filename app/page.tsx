@@ -16,21 +16,21 @@ export default function Home() {
 
   const [songs, setSongs] = useState<Song[]>([
     {
-      id: "song-1",
+      id: crypto.randomUUID(),
       title: "Morning Rain",
       mood: "静か",
       durationMinutes: 5,
       memo: "最初は静かに入る",
     },
     {
-      id: "song-2",
+      id: crypto.randomUUID(),
       title: "calm",
       mood: "穏やか",
       durationMinutes: 4,
       memo: "空気を整える",
     },
     {
-      id: "song-3",
+      id: crypto.randomUUID(),
       title: "幸せになるのよ",
       mood: "あたたかい",
       durationMinutes: 6,
