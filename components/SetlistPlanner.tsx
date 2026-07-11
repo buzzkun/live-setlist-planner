@@ -5,6 +5,7 @@ import LiveInfo from "./LiveInfo";
 import SongList from "./SongList";
 import type { Song, SongMood } from "../types/song";
 import { formatDuration } from "../utils/formatDuration";
+import { createSong } from "../app/actions/songActions";
 
 type SetlistPlannerProps = {
   initialSongs: Song[];
@@ -26,7 +27,7 @@ export default function SetlistPlanner({ initialSongs }: SetlistPlannerProps) {
 
   const [errorMessage, setErrorMessage] = useState("");
 
-  const addSong = () => {
+  const addSong = async () => {
     // 曲名が空なら、ここで処理を止める
     if (inputSongTitle.trim() === "") {
       setErrorMessage("曲名を入力してください");
@@ -53,16 +54,14 @@ export default function SetlistPlanner({ initialSongs }: SetlistPlannerProps) {
     }
 
     // 既存のsongsに、新しい曲データを追加した配列を作る
-    setSongs([
-      ...songs,
-      {
-        id: crypto.randomUUID(),
-        title: inputSongTitle,
-        mood: inputSongMood,
-        durationMinutes: durationNumber,
-        memo: inputSongMemo || "メモなし",
-      },
-    ]);
+    const createdSong = await createSong({
+      title: inputSongTitle,
+      mood: inputSongMood,
+      durationMinutes: durationNumber,
+      memo: inputSongMemo || "メモなし",
+    });
+
+    setSongs([...songs, createdSong]);
 
     // 追加後は入力欄を空にする
     setInputSongTitle("");

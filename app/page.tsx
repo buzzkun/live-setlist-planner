@@ -1,8 +1,8 @@
 import SetlistPlanner from "../components/SetlistPlanner";
-import type { Song } from "../types/song";
+import { getSongs } from "./actions/songActions";
 
 export default async function Home() {
-  const initialSongs: Song[] = [];
+  const initialSongs = await getSongs();
 
   return <SetlistPlanner initialSongs={initialSongs} />;
 }
