@@ -5,7 +5,10 @@ import LiveInfo from "./LiveInfo";
 import SongList from "./SongList";
 import type { Song, SongMood } from "../types/song";
 import { formatDuration } from "../utils/formatDuration";
-import { createSong } from "../app/actions/songActions";
+import {
+  createSong,
+  deleteSong as deleteSongAction,
+} from "../app/actions/songActions";
 
 type SetlistPlannerProps = {
   initialSongs: Song[];
@@ -71,9 +74,16 @@ export default function SetlistPlanner({ initialSongs }: SetlistPlannerProps) {
     setErrorMessage("");
   };
 
-  const deleteSong = (id: string) => {
-    // 削除したいid以外の曲だけを残す
-    setSongs(songs.filter((song) => song.id !== id));
+  const deleteSong = async (id: string) => {
+    try {
+      await deleteSongAction(id);
+
+      // 削除したいid以外の曲だけを残す
+      setSongs(songs.filter((song) => song.id !== id));
+      setErrorMessage("");
+    } catch {
+      setErrorMessage("曲の削除に失敗しました");
+    }
   };
 
   // songsのdurationMinutesを合計して、合計演奏時間を作る
