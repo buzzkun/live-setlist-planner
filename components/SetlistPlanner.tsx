@@ -9,6 +9,8 @@ import {
   createSong,
   deleteSong as deleteSongAction,
 } from "../app/actions/songActions";
+import { saveLiveSetlist } from "../app/actions/liveSetlistActions";
+import Link from "next/link";
 
 type SetlistPlannerProps = {
   initialSongs: Song[];
@@ -16,11 +18,12 @@ type SetlistPlannerProps = {
 
 export default function SetlistPlanner({ initialSongs }: SetlistPlannerProps) {
   const appName = "Live Setlist Planner";
-  const liveTitle = "7月ワンマンライブ";
 
-  const [venue, setVenue] = useState("下北沢 Music Hall");
-  const [inputVenue, setInputVenue] = useState("");
+  const [liveTitle, setLiveTitle] = useState("");
+  const [liveDate, setLiveDate] = useState("");
+  const [liveMemo, setLiveMemo] = useState("");
 
+  const [venue, setVenue] = useState("");
   const [songs, setSongs] = useState<Song[]>(initialSongs);
 
   const [inputSongTitle, setInputSongTitle] = useState("");
@@ -74,6 +77,33 @@ export default function SetlistPlanner({ initialSongs }: SetlistPlannerProps) {
     setErrorMessage("");
   };
 
+  const saveSetlist = async () => {
+    if (liveTitle.trim() === "") {
+      setErrorMessage("ライブタイトルを入力してください");
+      return;
+    }
+
+    if (venue.trim() === "") {
+      setErrorMessage("会場名を入力してください");
+      return;
+    }
+
+    if (songs.length === 0) {
+      setErrorMessage("曲を1曲以上追加してください");
+      return;
+    }
+
+    await saveLiveSetlist({
+      title: liveTitle,
+      venue,
+      liveDate: liveDate ? new Date(liveDate) : null,
+      memo: liveMemo || "メモなし",
+      songs,
+    });
+
+    setErrorMessage("");
+  };
+
   const deleteSong = async (id: string) => {
     try {
       await deleteSongAction(id);
@@ -112,32 +142,50 @@ export default function SetlistPlanner({ initialSongs }: SetlistPlannerProps) {
             ライブの曲順・雰囲気・演奏時間・メモを管理するアプリ
           </p>
         </header>
-
+        <Link
+          href="/lives"
+          className="inline-block rounded-full bg-white px-4 py-2 text-sm font-bold text-slate-700 shadow-sm"
+        >
+          保存済みライブ一覧を見る
+        </Link>
         <LiveInfo liveTitle={liveTitle} venue={venue} />
+        <div className="rounded-3xl bg-white p-6 shadow-sm">
+          <h2 className="text-xl font-bold">ライブ情報</h2>
 
-        <section className="rounded-3xl bg-white p-6 shadow-sm shadow-slate-200/70">
-          <h2 className="mb-4 text-xl font-extrabold text-slate-900">
-            会場を変更
-          </h2>
-
-          <div className="flex flex-col gap-3 sm:flex-row">
+          <div className="mt-4 grid gap-4 md:grid-cols-2">
             <input
               type="text"
-              value={inputVenue}
-              onChange={(e) => setInputVenue(e.target.value)}
-              placeholder="会場名を入力"
-              className="flex-1 rounded-xl border border-slate-200 px-4 py-3 outline-none focus:border-sky-400"
+              value={liveTitle}
+              onChange={(event) => setLiveTitle(event.target.value)}
+              className="rounded-xl border border-slate-300 px-4 py-3"
+              placeholder="ライブタイトル"
             />
 
-            <button
-              onClick={() => setVenue(inputVenue || venue)}
-              className="rounded-xl bg-sky-500 px-5 py-3 font-bold text-white transition hover:bg-sky-600"
-            >
-              反映
-            </button>
-          </div>
-        </section>
+            <input
+              type="date"
+              value={liveDate}
+              onChange={(event) => setLiveDate(event.target.value)}
+              className="rounded-xl border border-slate-300 px-4 py-3"
+            />
 
+            <input
+              type="text"
+              value={venue}
+              onChange={(event) => setVenue(event.target.value)}
+              className="rounded-xl border border-slate-300 px-4 py-3"
+              placeholder="会場"
+            />
+
+            <input
+              type="text"
+              value={liveMemo}
+              onChange={(event) => setLiveMemo(event.target.value)}
+              className="rounded-xl border border-slate-300 px-4 py-3"
+              placeholder="ライブメモ"
+            />
+          </div>
+        </div>
+        ;
         <section className="rounded-3xl bg-sky-50 p-6 shadow-sm shadow-sky-100/70">
           <div className="mb-6 space-y-4">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -230,6 +278,14 @@ export default function SetlistPlanner({ initialSongs }: SetlistPlannerProps) {
           {songs.length > 0 && (
             <SongList songs={songs} onDeleteSong={deleteSong} />
           )}
+
+          <button
+            type="button"
+            onClick={saveSetlist}
+            className="mt-6 w-full rounded-xl bg-slate-950 px-5 py-3 font-bold text-white transition hover:bg-slate-700"
+          >
+            このライブを保存
+          </button>
         </section>
       </div>
     </main>
