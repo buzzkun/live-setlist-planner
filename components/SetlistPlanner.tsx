@@ -185,7 +185,7 @@ export default function SetlistPlanner({ initialSongs }: SetlistPlannerProps) {
             />
           </div>
         </div>
-        ;
+
         <section className="rounded-3xl bg-sky-50 p-6 shadow-sm shadow-sky-100/70">
           <div className="mb-6 space-y-4">
             <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -199,11 +199,11 @@ export default function SetlistPlanner({ initialSongs }: SetlistPlannerProps) {
 
               <div className="flex flex-wrap gap-2">
                 <span className="whitespace-nowrap rounded-full bg-white px-4 py-2 text-sm font-bold text-sky-700 shadow-sm">
-                  {songs.length}曲
+                  全{songs.length}曲
                 </span>
 
                 <span className="whitespace-nowrap rounded-full bg-white px-4 py-2 text-sm font-bold text-slate-700 shadow-sm">
-                  合計 {formattedTotalDuration}
+                  合計時間 {formattedTotalDuration}
                 </span>
               </div>
             </div>
