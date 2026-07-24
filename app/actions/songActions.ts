@@ -58,6 +58,40 @@ export async function createSong(input: {
   };
 }
 
+export async function updateSong(
+  id: string,
+  input: {
+    title: string;
+    mood: SongMood;
+    durationMinutes: number;
+    memo: string;
+  },
+): Promise<Song> {
+  const song = await prisma.song.update({
+    where: {
+      id,
+    },
+    data: {
+      title: input.title,
+      mood: input.mood,
+      durationMinutes: input.durationMinutes,
+      memo: input.memo,
+    },
+    select: {
+      id: true,
+      title: true,
+      mood: true,
+      durationMinutes: true,
+      memo: true,
+    },
+  });
+
+  return {
+    ...song,
+    mood: song.mood as SongMood,
+  };
+}
+
 // 受け取ったidと一致する曲に削除日時を入れて、削除済み扱いにする
 export async function deleteSong(id: string): Promise<void> {
   await prisma.song.update({
